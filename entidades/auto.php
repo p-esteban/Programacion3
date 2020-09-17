@@ -1,17 +1,17 @@
 <?php
-include_once "./archivos/files.php";
+include_once "./persistenciaDeDatos/files.php";
 
-class Auto extends fileHandler{
-    private $_color;
-    private $_precio;
-    private $_marca;
-    private $_fecha;
-    private $_id;
+class auto extends fileHandler{
+    public $_color;
+    public $_precio;
+    public $_marca;
+    public $_fecha;
+    public $_id;
 
 
     public function __construct($id,$marca,$color,$precio = 0,$fecha = "" )
     {
-        parent::__construct('auto.txt');
+        
         $this->_color = $color;
         $this->_marca = $marca;
         $this->_precio = $precio; 
@@ -23,16 +23,7 @@ class Auto extends fileHandler{
     {
         
     }
-    public function GetColor(){
-        return $this->_color;
-    }
-    public function GetPrecio(){
-        return "$".$this->_precio;
-    }
-    public function GetFecha(){
-        return $this->_fecha;
-    }
-
+    
     public function AgregarImpuestos($impuesto){
         $this->_precio += $impuesto;
     }
@@ -64,17 +55,17 @@ class Auto extends fileHandler{
         return $this->_marca.'*'.$this->_color.'*'.$this->_precio.'*'.$this->_fecha;
     }
     public function Save(){
-       return parent::SaveObject($this);
+       return parent::SaveLine();
         
     }
 
-    public static function ReadAll(){
-        $list = parent::Read();
+    public static function ReadArrayAuto(){
+        $list = parent::ReadTxt();
         $arrayAutos = array();
         if (count($list)>0) {
             foreach ($list as $key => $value) {
                 if (count($value)>1) {
-                    $auto = new Auto($value[0],$value[1],$value[3]);
+                    $auto = new Auto($value[0],$value[1],$value[3]);/// TO DO agregar parametros
                     array_push($arrayAutos,$auto);
                 }
             }
@@ -82,6 +73,22 @@ class Auto extends fileHandler{
         return $arrayAutos;
     }
 
+
+    public function SaveAsJson()
+    {
+    
+        // parent::SaveJson();
+        parent::saveSerialized();
+
+
+    }
+
+    public static function ReadArrayJson(){
+        // return auto::ReadJson();
+
+        return auto::readSerialized();
+
+    }
 
 
 }
